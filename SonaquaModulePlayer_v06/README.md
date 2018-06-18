@@ -1,7 +1,9 @@
-# Sonaqua_Dinacon
+# SonaquaModulePlayerCurrents2018
 ## By Scott Kildall
 ### www.kildall.com
 ### Part of the Sonaqua project 
+###  
+### Build for Currents 2018
 
 
 #### Description
@@ -14,13 +16,13 @@ Using a simple Arduino circuit, this artwork creates sonification orchestral arr
 
 I am also teaching this as a series of workshops where participants solder circuits and construct enclosures to build handheld Sonaqua devices, so that we can create large-scale performances.
 
-
-
-#### Directories/Examples
-
-
 #### Technical
 
+This will run off of a switch-only mode.
+
+The lowest sample value is 93 and highest is 873, so there is quite a range here
+
+Lower sample values will have better modulation
 
 #### License
 
@@ -31,11 +33,5 @@ Creative Commons Attribution-NonCommercial 3.0 Unported License.
 
 You should have received a copy of the license along with this
 work.  If not, see <http://creativecommons.org/licenses/by-nc/3.0/>.
-
-#### This uses the Mozzy Libraries
-##### http://sensorium.github.io/Mozzi/
-##### by Tim Barass
-##### https://github.com/sensorium/Mozzi
-##### Licensed under a Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) license
 
 
