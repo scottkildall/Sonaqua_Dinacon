@@ -22,7 +22,10 @@ I am also teaching this as a series of workshops where participants solder circu
 The basic example. This one does not use Mozzi and also will output to the LED backpack. This is a great first tester.
 
 ######Sonaqua_Electric_Noise:
-A working example of Mozzi using analog input for current flow (usually through water). There may be a software glitch where a non-connection still makes a buzzing sound. May have to lower the threshhold reading for this to work properly.
+A working example of Mozzi using analog input for current flow (usually through water). 
+
+######Sonaqua_Heartbeat:
+A working example which uses the Adafruit heart rate sensor. BMP calculation is buggy
 
 ######Sonaqua_Detuned_Beats_Wash:
 In progress, using Sonaqua with Mozzi

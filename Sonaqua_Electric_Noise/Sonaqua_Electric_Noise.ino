@@ -43,7 +43,7 @@ float curFreq  = minAPhasor;
 #define LEDPin (12)
 
 // comment out for no serial debug (much faster)
-#define SERIAL_DEBUG
+//#define SERIAL_DEBUG
 
 int minEC = 0;
 int maxEC = 1000; 
@@ -92,8 +92,6 @@ void updateControl(){
   
   aCos.setFreq(mtof(curFreq));
   aPhasor.setFreq(curFreq);
-
-  
 }
 
 //-- Sample EC using Analog pins, returns 0-1023
@@ -103,8 +101,8 @@ unsigned int getEC(){
   digitalWrite(ECPower,HIGH);
 
   // This is not a mistake, First reading will be low beause of charged a capacitor
-  raw= analogRead(ECPin);
-  raw= analogRead(ECPin);   
+  raw = analogRead(ECPin);
+  raw = analogRead(ECPin);   
   
   digitalWrite(ECPower,LOW);
  
@@ -118,8 +116,8 @@ int updateAudio(){
   char asig1 = (char)(aPhasor.next()>>24);
 
   // this will produce a more glitchy, randomized sound
-  if(random(1000) < 850)
-    return 0;
+//  if(random(1000) < 850)
+//    return 0;
 
     return aCos.next() / (asig1) + random(5 + curFreq/20);
 }
