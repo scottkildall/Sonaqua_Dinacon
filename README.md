@@ -16,7 +16,29 @@ I am also teaching this as a series of workshops where participants solder circu
 
 
 
-#### Directories/Examples
+#### Files + Examples
+
+######SonaquaModulePlayer_v06:
+The basic example. This one does not use Mozzi and also will output to the LED backpack. This is a great first tester.
+
+######Sonaqua_Electric_Noise:
+A working example of Mozzi using analog input for current flow (usually through water). There may be a software glitch where a non-connection still makes a buzzing sound. May have to lower the threshhold reading for this to work properly.
+
+######Sonaqua_Detuned_Beats_Wash:
+In progress, using Sonaqua with Mozzi
+
+######Sonaqua_Phasemod_Envelope:
+In progress, using Sonaqua with Mozzi
+
+######Sonaqua_PWM_Phasing:
+In progress, using Sonaqua with Mozzi
+
+
+######ADSR_Audio_Rate_Envelope:
+From Mozzi examples, not in use
+
+######AudioDelayFeedback:
+From Mozzi examples, not in use
 
 
 #### Technical
