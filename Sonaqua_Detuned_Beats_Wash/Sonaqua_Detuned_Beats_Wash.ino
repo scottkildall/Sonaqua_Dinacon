@@ -1,4 +1,22 @@
-/*  Plays a fluctuating ambient wash using pairs
+/*  
+ *   Second complete sketch for Sonaqua at Dinacon
+ *   
+ *   by Scott Kildall
+ *   www.kildall.com
+ *   
+ *   Uses the Mozzi Libraries
+ *   
+ *   Based on the Detuned_Beats_Wash Sample (comments below)
+ * -----------------------------------------  
+ *   Sonaqua is copyright
+ *   Scott Kildall, 2018, CC by-nc-sa.  
+ * -----------------------------------------
+ *   Mozzy is copyright
+ *   Tim Barrass 2012, CC by-nc-sa.
+ * -----------------------------------------
+
+
+    Plays a fluctuating ambient wash using pairs
     of slightly detuned oscillators, following an example
     from Miller Puckette's Pure Data manual.
   
@@ -9,20 +27,6 @@
     Demonstrates the use of fixed-point Q16n16
     format numbers, mtof() for converting midi note
     values to frequency, and xorshift96() for random numbers.
-    
-    For this sketch to run smoothly on 16MHz Ateml boards, you need to edit
-    platform.txt (on OSX you can find it by searching in /Users/your_name/Library/Arduino15).
-    Search and replace -Os with -O2.  Save.  
-    This tells the compiler to optimise for speed, instead of size.
-  
-    Circuit: Audio output on digital pin 9 on a Uno or similar, or
-    DAC/A14 on Teensy 3.1, or 
-    check the README or http://sensorium.github.com/Mozzi/
-  
-    Mozzi help/discussion/announcements:
-    https://groups.google.com/forum/#!forum/mozzi-users
-  
-    Tim Barrass 2012, CC by-nc-sa.
 */
 
 #include <MozziGuts.h>
@@ -60,22 +64,43 @@ Q16n16 variation() {
   return  (Q16n16) (xorshift96() & 524287UL);
 }
 
-//-- sonaqua stuff
+//-- SONAQUA STUFF
 #define ECPower (A2)
 #define ECPin (A1) 
 
 //-- power led
 #define LEDPin (12)
 
+int minEC = 0;
+int maxEC = 1000; 
+unsigned int curEC;
+
+//-- END SONAQUA
+
+//-- power led
+#define LEDPin (12)
+
+
+ int highFreq = 240;
+
+ int lowFreq = 54; 
+    
 void setup(){
-   //-- pin inputs / outputs
+  randomSeed(A0);  
+  
+  initSonaqua();
+  initMozzy();
+  
+  startMozzi(64); // a literal control rate here
+}
+
+void initSonaqua() {
+  //-- pin inputs / outputs
   pinMode(ECPin,INPUT);
   pinMode(ECPower,OUTPUT);                // set pin for sourcing current
+  pinMode(LEDPin,OUTPUT);                // set pin for sourcing current
 
-
-pinMode(LEDPin,OUTPUT);                // set pin for sourcing current
-
-// Flash LED
+  // Flash LED
   for(int i = 0; i < 6; i++ ) {
     digitalWrite(LEDPin,HIGH);
     delay(100);
@@ -83,10 +108,10 @@ pinMode(LEDPin,OUTPUT);                // set pin for sourcing current
     delay(100);
   }
   digitalWrite(LEDPin,HIGH);
+}
 
+void initMozzy() {
   
-  startMozzi(64); // a literal control rate here
-
   // select base frequencies using mtof (midi to freq) and fixed-point numbers
   f1 = Q16n16_mtof(Q16n0_to_Q16n16(48));
   f2 = Q16n16_mtof(Q16n0_to_Q16n16(74));
@@ -115,27 +140,37 @@ pinMode(LEDPin,OUTPUT);                // set pin for sourcing current
   aCos7b.setFreq_Q16n16(f7+variation());
 }
 
-
 void loop(){
   audioHook();
 }
 
-
 void updateControl(){
   // todo: choose a nice scale or progression and make a table for it
   // or add a very slow gliss for f1-f7, like shephard tones
+  curEC = getEC(); 
 
- unsigned int rawEC = getEC(); 
 
-    
   // map it to an 8 bit range for efficient calculations in updateAudio
-  int volume = map(rawEC, 0, 1023, 10, 64);  
+   f1 = Q16n16_mtof(Q16n0_to_Q16n16(map(curEC, minEC, maxEC, lowFreq, highFreq)));
+   f2 = Q16n16_mtof(Q16n0_to_Q16n16(map(curEC, minEC, maxEC, lowFreq + 2, highFreq + 9)));
+   f3 = Q16n16_mtof(Q16n0_to_Q16n16(map(curEC, minEC, maxEC, lowFreq + 4, highFreq + 21)));
+   f4 = Q16n16_mtof(Q16n0_to_Q16n16(map(curEC, minEC, maxEC, lowFreq + 12, highFreq + 32)));
+   f5 = Q16n16_mtof(Q16n0_to_Q16n16(map(curEC, minEC, maxEC, lowFreq + 10, highFreq + 24)));
+   f6 = Q16n16_mtof(Q16n0_to_Q16n16(map(curEC, minEC, maxEC, lowFreq, highFreq)));
+   f7 = Q16n16_mtof(Q16n0_to_Q16n16(map(curEC, minEC, maxEC, lowFreq + 6, highFreq + 20)));
 
-   f1 = Q16n16_mtof(Q16n0_to_Q16n16(volume));
-   f2 = Q16n16_mtof(Q16n0_to_Q16n16(map(rawEC, 1023, 0, 1, 400)));
-   f3 = Q16n16_mtof(Q16n0_to_Q16n16(map(rawEC, 0, 1023, 1, 128)));
-   f4 = Q16n16_mtof(Q16n0_to_Q16n16(map(rawEC, 0, 1023, 50, 20)));
-    
+  // this seems to make the sounds a bit smoother
+    f1 = f7;
+  
+ // set Oscils with chosen frequencies
+  aCos1.setFreq_Q16n16(f1);
+  aCos2.setFreq_Q16n16(f2);
+  aCos3.setFreq_Q16n16(f3);
+  aCos4.setFreq_Q16n16(f4);
+  aCos5.setFreq_Q16n16(f5);
+  aCos6.setFreq_Q16n16(f6);
+  aCos7.setFreq_Q16n16(f7);
+  
   
   // change frequencies of the b oscillators
   switch (lowByte(xorshift96()) & 7){ // 7 is 0111
@@ -172,7 +207,9 @@ void updateControl(){
 
 
 int updateAudio(){
-
+  if( curEC > maxEC )
+    return 0;
+    
   int asig =
     aCos1.next() + aCos1b.next() +
     aCos2.next() + aCos2b.next() +

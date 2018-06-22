@@ -31,8 +31,8 @@
 
 //-- PINS
 #define speakerPin (9)
-#define waterLEDPin (10)
-#define LEDPin (8)
+#define waterLEDPin (8)
+#define LEDPin (12)
 
 #define SwitchPin (7)
 
