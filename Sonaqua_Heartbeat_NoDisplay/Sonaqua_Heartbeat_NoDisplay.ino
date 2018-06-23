@@ -117,11 +117,6 @@ void setup() {
 void loop() { 
   
   Signal = analogRead(HeartRateInputPin);  // Read the PulseSensor's value. 
- // Serial.println(Signal);
-
-Serial.println(Signal);
-
-return;
   
   if(Signal > Threshold)   {  
     if( bAboveThreshold == false ) {

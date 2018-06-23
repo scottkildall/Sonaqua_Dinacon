@@ -30,6 +30,10 @@ A working example which uses the Adafruit heart rate sensor. BMP calculation is 
 #####Sonaqua_SoilSensor:
 Uses the Sparkfun Soil Moisture Sensor to make sounds
 
+#####Sonaqua_Phasemod_Humidity
+Humidity Sensor with Phasmod
+Note, play with: aEnvelop.setFreq() for next iterations
+
 ######Sonaqua_Detuned_Beats_Wash:
 In progress, using Sonaqua with Mozzi
 
