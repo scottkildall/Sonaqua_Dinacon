@@ -27,6 +27,9 @@ A working example of Mozzi using analog input for current flow (usually through 
 ######Sonaqua_Heartbeat:
 A working example which uses the Adafruit heart rate sensor. BMP calculation is buggy
 
+#####Sonaqua_SoilSensor:
+Uses the Sparkfun Soil Moisture Sensor to make sounds
+
 ######Sonaqua_Detuned_Beats_Wash:
 In progress, using Sonaqua with Mozzi
 

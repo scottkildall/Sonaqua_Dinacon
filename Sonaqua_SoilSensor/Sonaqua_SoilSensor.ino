@@ -5,10 +5,9 @@
  *  
  *  Sonaqua: Uses an analog soil sensor (Soil Moisture Sensor) to make sounds.
  *  
- *  Adapted from this Hackaday project
- *  https://hackaday.io/project/7008-fly-wars-a-hackers-solution-to-world-hunger/log/24646-three-dollar-ec-ppm-meter-arduino
+ *  Run sensor through A1, but can be any analog
  *  
- *  Run sensor through SDA / A4
+ *  Code needs some cleaning
  *  
  */
 
