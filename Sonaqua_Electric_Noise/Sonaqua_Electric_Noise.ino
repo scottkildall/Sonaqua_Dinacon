@@ -9,7 +9,7 @@
  *   We use a combination of an aPhasor and a cosine wave
  *   which gets modulated to the audio synth.
  * -----------------------------------------  
- *   Sonaqya is copyright
+ *   Sonaqua is copyright
  *   Scott Kildall, 2018, CC by-nc-sa.  
  * -----------------------------------------
  *   Mozzy is copyright
