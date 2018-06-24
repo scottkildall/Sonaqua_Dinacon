@@ -6,7 +6,7 @@
  *   
  *   Uses the Mozzi Libraries
  *   
- *   Based on the Phasemod_Enveloipe example
+ *   Based on the Phasemod_Envelope example
  * -----------------------------------------  
  *   Sonaqua is copyright
  *   Scott Kildall, 2018, CC by-nc-sa.  

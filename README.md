@@ -17,16 +17,19 @@ I am also teaching this as a series of workshops where participants solder circu
 
 
 #### Files + Examples
+Note: Incomplete directory are from pre-Dinacon tests
 
+#####Working:
 ######SonaquaModulePlayer_v06:
 The basic example. This one does not use Mozzi and also will output to the LED backpack. This is a great first tester.
 
 ######Sonaqua_Synth_Simulator:
 A series of synth effects for simulation, before plugging into electronic sensors
 
-#####Sonaqua_Phasemod_Humidity
-DONE, Humidity Sensor with Phasmod. 
+######Sonaqua_Phasemod_Humidity
+Humidity Sensor with Phasmod.
 
+#####In Progress:
 ######Sonaqua_Electric_Noise:
 A working example of Mozzi using analog input for current flow (usually through water). 
 
@@ -42,6 +45,9 @@ Crude sketch with electrodes, good for reading plant leaves. EC values are in ra
 ######Sonaqua_Detuned_Beats_Wash:
 In progress, using Sonaqua with Mozzi
 
+######Sonaqua_Alcohol_Sensor:
+In progress
+
 ######Sonaqua_Phasemod_Envelope:
 In progress, using Sonaqua with Mozzi
 
@@ -49,11 +55,6 @@ In progress, using Sonaqua with Mozzi
 In progress, using Sonaqua with Mozzi
 
 
-######ADSR_Audio_Rate_Envelope:
-From Mozzi examples, not in use
-
-######AudioDelayFeedback:
-From Mozzi examples, not in use
 
 
 #### Technical
