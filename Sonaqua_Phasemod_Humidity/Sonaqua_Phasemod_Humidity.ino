@@ -53,6 +53,8 @@ int humidityValue;
 float aModulatorBaseFreq = 135.0f;
 
 void setup() {
+  randomSeed(A0);
+  
   #ifdef SERIAL_DEBUG
     Serial.begin(115200);
     Serial.println("Starting up: Sonaqua_Phasemod_Humidity");
@@ -115,7 +117,7 @@ int updateAudio(){
    //-- a short delay does a really crazy schmear of the sounds — the higher the delay, the more it sounds
    //-- like a unified sound as opposed to a series of distinct beats
    //-- the randomness adds a tinny sound at the end
-  delayMicroseconds(humidityValue + random(200) - 100);
+  delayMicroseconds(humidityValue + 200 + random(400));
 
    aCarrier.setFreq((float)humidityValue/6.0f);
 
