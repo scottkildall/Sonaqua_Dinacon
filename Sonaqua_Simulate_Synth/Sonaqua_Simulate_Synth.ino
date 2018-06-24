@@ -20,6 +20,7 @@
 #include <tables/cos8192_int8.h>
 #include <tables/envelop2048_uint8.h>
 
+//-- SIMULATION 1
 #define CONTROL_RATE 512 // quite fast, keeps modulation smooth
 
 // use: Oscil <table_size, update_rate> oscilName (wavetable), look in .h file of table #included above
@@ -30,11 +31,12 @@ Oscil <COS8192_NUM_CELLS, CONTROL_RATE> kModFreq1(COS8192_DATA);
 Oscil <COS8192_NUM_CELLS, CONTROL_RATE> kModFreq2(COS8192_DATA);
 Oscil <ENVELOP2048_NUM_CELLS, AUDIO_RATE> aEnvelop(ENVELOP2048_DATA);
 
+
 //-- simulated EC level
 int simEC = 300;
 
 //-- SONAQUA STUFF
-#define humiditySensorPin (A1) 
+
 
 //-- power led
 #define LEDPin (12)
@@ -42,11 +44,8 @@ int simEC = 300;
 // comment out for no serial debug (much faster)
 #define SERIAL_DEBUG
 
-int minEC = 0;
-int maxEC = 1000; 
-unsigned int curEC;
-
-int humidityValue;
+int simValue;
+int simNumber = 1;
 
 
 //--
@@ -73,15 +72,38 @@ void setup() {
   
   startMozzi(CONTROL_RATE);
 
-  humidityValue = analogRead(humiditySensorPin);
+  simValue = getSimValue();
 
  #ifdef SERIAL_DEBUG
   Serial.print("initial humidity value = ");
-  Serial.println(humidityValue);
+  Serial.println(simValue);
 #endif
-  
-  //-- initial values 
-  aCarrier.setFreq(humidityValue);
+
+  switch(simNumber) {
+    case 1:
+      initSim_01();
+      break;
+  }
+}
+
+int getSimValue() {
+  return 700 + random(10);
+}
+
+void updateControl() {
+  switch(simNumber) {
+    simValue = getSimValue();
+     
+    case 1:
+      updateControl_01();
+      break;
+  }
+}
+
+//------ SIMUATION 1 --------
+void initSim_01() {
+  //-- initial values
+  aCarrier.setFreq(simValue);
   kModFreq1.setFreq(.85f);
   kModFreq2.setFreq(0.1757f);
   aModWidth.setFreq(0.1434f);
@@ -90,37 +112,39 @@ void setup() {
   aEnvelop.setFreq(8.0f);
 }
 
+void updateControl_01() {
+    aModulator.setFreq(aModulatorBaseFreq + 0.4313f*kModFreq1.next() + kModFreq2.next());
 
-void updateControl() {
- humidityValue = analogRead(humiditySensorPin);
-
-//-- doing this below seems to screw up the timing
-/*
-#ifdef SERIAL_DEBUG
-  Serial.print("humidity = ");
-  Serial.println(humidityValue);
-#endif
-*/
-
-  aModulator.setFreq(aModulatorBaseFreq + 0.4313f*kModFreq1.next() + kModFreq2.next());
-
-    kModFreq1.setFreq(.85f + (float)(humidityValue+random(50))/300.f);
-
+    kModFreq1.setFreq(.85f + (float)(simValue+random(50))/300.f);
 }
 
-
-int updateAudio(){
-   aModulatorBaseFreq = (float)humidityValue/4.0f;
+int updateAudio_01() {
+   aModulatorBaseFreq = (float)simValue/4.0f;
 
    //-- a short delay does a really crazy schmear of the sounds — the higher the delay, the more it sounds
    //-- like a unified sound as opposed to a series of distinct beats
    //-- the randomness adds a tinny sound at the end
-  delayMicroseconds(humidityValue + random(200) - 100);
+  delayMicroseconds(simValue + random(200) - 100);
 
-   aCarrier.setFreq((float)humidityValue/6.0f);
+   aCarrier.setFreq((float)simValue/6.0f);
 
   int asig = aCarrier.phMod((int)aModulator.next()*(260u+aModWidth.next()));
   return (asig*(byte)aEnvelop.next())>>8;
+}
+
+//-----------------------------
+
+int updateAudio(){
+  switch(simNumber) {
+    simValue = getSimValue();
+     
+    case 1:
+      return updateAudio_01();
+      break;
+  }
+
+
+  return 0;
 }
 
 

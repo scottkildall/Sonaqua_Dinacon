@@ -21,6 +21,12 @@ I am also teaching this as a series of workshops where participants solder circu
 ######SonaquaModulePlayer_v06:
 The basic example. This one does not use Mozzi and also will output to the LED backpack. This is a great first tester.
 
+######Sonaqua_Synth_Simulator:
+A series of synth effects for simulation, before plugging into electronic sensors
+
+#####Sonaqua_Phasemod_Humidity
+DONE, Humidity Sensor with Phasmod. 
+
 ######Sonaqua_Electric_Noise:
 A working example of Mozzi using analog input for current flow (usually through water). 
 
@@ -32,10 +38,6 @@ Uses the Sparkfun Soil Moisture Sensor to make sounds
 
 #####Sonaqua_Electrodes:
 Crude sketch with electrodes, good for reading plant leaves. EC values are in range of 700-950
-
-#####Sonaqua_Phasemod_Humidity
-Humidity Sensor with Phasmod
-Note, play with: aEnvelop.setFreq() for next iterations
 
 ######Sonaqua_Detuned_Beats_Wash:
 In progress, using Sonaqua with Mozzi
