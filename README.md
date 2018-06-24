@@ -30,6 +30,9 @@ A working example which uses the Adafruit heart rate sensor. BMP calculation is 
 #####Sonaqua_SoilSensor:
 Uses the Sparkfun Soil Moisture Sensor to make sounds
 
+#####Sonaqua_Electrodes:
+Crude sketch with electrodes, good for reading plant leaves. EC values are in range of 700-950
+
 #####Sonaqua_Phasemod_Humidity
 Humidity Sensor with Phasmod
 Note, play with: aEnvelop.setFreq() for next iterations
