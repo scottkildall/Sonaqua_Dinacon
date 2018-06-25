@@ -20,6 +20,8 @@
 #include <tables/cos8192_int8.h>
 #include <tables/envelop2048_uint8.h>
 
+
+
 #define CONTROL_RATE 512 // quite fast, keeps modulation smooth
 
 // use: Oscil <table_size, update_rate> oscilName (wavetable), look in .h file of table #included above
@@ -48,7 +50,6 @@ unsigned int curEC;
 
 int humidityValue;
 
-
 //--
 float aModulatorBaseFreq = 135.0f;
 
@@ -72,16 +73,16 @@ void setup() {
   }
   digitalWrite(LEDPin,HIGH);
 
-  
-  startMozzi(CONTROL_RATE);
-
   humidityValue = analogRead(humiditySensorPin);
+
 
  #ifdef SERIAL_DEBUG
   Serial.print("initial humidity value = ");
   Serial.println(humidityValue);
 #endif
-  
+
+  startMozzi(CONTROL_RATE);
+
   //-- initial values 
   aCarrier.setFreq(humidityValue);
   kModFreq1.setFreq(.85f);
@@ -106,8 +107,7 @@ void updateControl() {
 
   aModulator.setFreq(aModulatorBaseFreq + 0.4313f*kModFreq1.next() + kModFreq2.next());
 
-    kModFreq1.setFreq(.85f + (float)(humidityValue+random(50))/300.f);
-
+   kModFreq1.setFreq(.85f + (float)(humidityValue+random(50))/300.f);
 }
 
 
@@ -117,7 +117,8 @@ int updateAudio(){
    //-- a short delay does a really crazy schmear of the sounds — the higher the delay, the more it sounds
    //-- like a unified sound as opposed to a series of distinct beats
    //-- the randomness adds a tinny sound at the end
-  delayMicroseconds(humidityValue + 200 + random(400));
+   //-- note: this doesn't seem to affect the whiny sound that I don't like
+    delayMicroseconds(humidityValue + 200 + random(400));
 
    aCarrier.setFreq((float)humidityValue/6.0f);
 

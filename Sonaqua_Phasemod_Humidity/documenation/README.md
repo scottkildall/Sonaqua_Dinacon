@@ -25,6 +25,9 @@ https://www.sparkfun.com/products/9569
 (1) June 24th, 2018 — recording with a humidty reading of ~675 (0-1023)
 	sound file = 24_June_2018_Sonaqua_Humidity.mp3
 
+(2) June 25th, 2018 — recording with a humidty reading of ~703 (0-1023)
+	sound file = 25_June_2018_Sonaqua_Humidity.mp3
+	
 
 #### License
 
