@@ -26,6 +26,9 @@ The basic example. This one does not use Mozzi and also will output to the LED b
 ######Sonaqua_Synth_Simulator:
 A series of synth effects for simulation, before plugging into electronic sensors
 
+######Sonaqua_SoilSensor:
+Uses the Sparkfun Soil Moisture Sensor to make sounds. I'd still like to clean this one up. In a previous iteration, I was getting some lovely undertones, but I can't seem to quite get there anymore.
+
 ######Sonaqua_Phasemod_Humidity
 Humidity Sensor with Phasmod.
 
