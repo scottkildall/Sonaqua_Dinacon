@@ -32,15 +32,12 @@ Uses the Sparkfun Soil Moisture Sensor to make sounds. I'd still like to clean t
 ######Sonaqua_Phasemod_Humidity
 Humidity Sensor with Phasmod.
 
+######Sonaqua_Heartbeat:
+A working example which uses a heart rate sensor and makes tones to match beats-per-minute.
+
 #####In Progress:
 ######Sonaqua_Electric_Noise:
 A working example of Mozzi using analog input for current flow (usually through water). 
-
-######Sonaqua_Heartbeat:
-A working example which uses the Adafruit heart rate sensor. BMP calculation is buggy
-
-#####Sonaqua_SoilSensor:
-Uses the Sparkfun Soil Moisture Sensor to make sounds
 
 #####Sonaqua_Electrodes:
 Crude sketch with electrodes, good for reading plant leaves. EC values are in range of 700-950
