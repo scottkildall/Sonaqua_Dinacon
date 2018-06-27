@@ -124,14 +124,14 @@ void updateControl() {
    simValue = getSimValue();
    
     //-- frequency is the basic oscilator
-   if( random(2) == 0 )
-    aModDepth.setFreq((float)simValue + random(250));
+   if( random(4) == 0 )
+    aModDepth.setFreq((float)simValue + random(20,300));
 
   //-- this creates what appears to be a syncopatic feel to it — the lower the random number, the more glitchy it sounds
 
-  if( random(10) == 0 )
+  if( random(15) == 0 )
     //-- this sets a much higher pitch — will sound glitchy
-    aCarrier.setFreq_Q24n8(carrier_freq * ((float)random(10,50)));
+    aCarrier.setFreq_Q24n8(carrier_freq * ((float)random(20,100)));
   else
     aCarrier.setFreq_Q24n8(carrier_freq);
     
@@ -140,7 +140,7 @@ void updateControl() {
      sim1 = !sim1;
      
     //-- do some random changes to make it feel more dynamic
-    kNoteChangeDelay.set(random(3000,10000));
+    kNoteChangeDelay.set(random(4000,10000));
     
     
     // the value after (byte) will keep it at lower octaves (more pleasant to the ear)
