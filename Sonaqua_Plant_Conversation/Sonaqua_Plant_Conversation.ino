@@ -1,13 +1,14 @@
 /*  
- *   Sonaqua_Simulate_Synth: Scratch Sketch for simulating audio synth
- *   This is always a work-in-progress, used to for developing soundscapes before putting
- *   in actual sensor code.
+ *   Sonaqua_Plant_Conversation:
+ *   Two sensors hooked up to two different plants
+ *   that will simulate a conversation they might have
  *   
  *   by Scott Kildall
  *   www.kildall.com
  *   
  *   Uses the Mozzi Libraries
  *   
+ *   Based on the Based on the AM_Synthesis example example
  * -----------------------------------------  
  *   Sonaqua is copyright
  *   Scott Kildall, 2018, CC by-nc-sa.  
@@ -61,6 +62,7 @@ int simEC = 300;
 int simValue;
 int simNumber = 1;
 
+boolean sim1 = true;
 
 //--
 float aModulatorBaseFreq = 135.0f;
@@ -88,62 +90,61 @@ void setup() {
   
 
   simValue = getSimValue();
-
+  
  #ifdef SERIAL_DEBUG
   Serial.print("initial humidity value = ");
   Serial.println(simValue);
 #endif
 
-  switch(simNumber) {
-    case 1:
-      initSim_01();
-      break;
-  }
-
-  startMozzi(CONTROL_RATE);
+ 
+  initMozzy();
+  
+ 
 }
 
 int getSimValue() {
-  return 700 + random(10);
+  if( sim1 )
+    return 700 + random(10);
+ else
+  return 500 + random(10);
 }
 
-void updateControl() {
-  switch(simNumber) {
-    simValue = getSimValue();
-     
-    case 1:
-      updateControl_01();
-      break;
-  }
-}
 
-//------ SIMUATION 1 --------
-void initSim_01() {
+void initMozzy() {
   ratio = float_to_Q8n8(10.0f);   // define modulation ratio in float and convert to fixed-point
   kNoteChangeDelay.set(10000); // note duration ms, within resolution of CONTROL_RATE
   aModDepth.setFreq(1.f);     // vary mod depth to highlight am effects
   randomSeed(A0); // reseed the random generator for different results each time the sketch runs
 
+   startMozzi(CONTROL_RATE);
 }
 
-void updateControl_01() {
+void updateControl() {
    static Q16n16 last_note = octave_start_note;
+   simValue = getSimValue();
+   
+    //-- frequency is the basic oscilator
+   if( random(2) == 0 )
+    aModDepth.setFreq((float)simValue + random(250));
 
-  //aModDepth.setFreq((float)random(100,simValue));
+  //-- this creates what appears to be a syncopatic feel to it — the lower the random number, the more glitchy it sounds
 
-  if( random(5) == 0 )
-    aModDepth.setFreq((float)random(100,simValue));
+  if( random(10) == 0 )
+    //-- this sets a much higher pitch — will sound glitchy
+    aCarrier.setFreq_Q24n8(carrier_freq * ((float)random(10,50)));
+  else
+    aCarrier.setFreq_Q24n8(carrier_freq);
     
   if(kNoteChangeDelay.ready() ) {
+      // flip between the 2 plants
+     sim1 = !sim1;
+     
     //-- do some random changes to make it feel more dynamic
-    kNoteChangeDelay.set(random(5000,10000));
-    //aModDepth.setFreq((float)random(1,30));
-  
-    // change octave now and then
- //   if(rand((byte)5)==0){
-
-    // the 3 value will keep it at lower octaves (more pleasant to the ear)
-      last_note = 36+(rand((byte)3)*12);
+    kNoteChangeDelay.set(random(3000,10000));
+    
+    
+    // the value after (byte) will keep it at lower octaves (more pleasant to the ear)
+      last_note = 36+(rand((byte)2)*12);
 
        // change step up or down a semitone, randomly
       if( random(2) == 0 )
@@ -151,12 +152,9 @@ void updateControl_01() {
       else
         last_note += 3 * (1-rand((byte)3));
     
-
        // change modulation ratio now and then
        ratio = ((Q8n8) 1+ rand((byte)5)) <<8;
        ratio += rand((byte)255);
-
-    
 
     // convert midi to frequency
     Q16n16 midi_note = Q8n0_to_Q16n16(last_note); 
@@ -165,7 +163,7 @@ void updateControl_01() {
     // calculate modulation frequency to stay in ratio with carrier
     mod_freq = (carrier_freq * ratio)>>8; // (Q24n8   Q8n8) >> 8 = Q24n8
 
-      // set frequencies of the oscillators
+    // set frequencies of the oscillators
     aCarrier.setFreq_Q24n8(carrier_freq);
     aModulator.setFreq_Q24n8(mod_freq);
 
@@ -174,25 +172,10 @@ void updateControl_01() {
   }
 }
 
-int updateAudio_01() {
-    long mod = (128u+ aModulator.next()) * ((byte)128+ aModDepth.next());
+int updateAudio() {
+  long mod = (128u+ aModulator.next()) * ((byte)128+ aModDepth.next());
   int out = (mod * aCarrier.next())>>16;
   return out;
-}
-
-//-----------------------------
-
-int updateAudio(){
-  switch(simNumber) {
-    simValue = getSimValue();
-     
-    case 1:
-      return updateAudio_01();
-      break;
-  }
-
-
-  return 0;
 }
 
 

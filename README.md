@@ -24,16 +24,19 @@ Note: Incomplete directory are from pre-Dinacon tests
 The basic example. This one does not use Mozzi and also will output to the LED backpack. This is a great first tester.
 
 ######Sonaqua_Synth_Simulator:
-A series of synth effects for simulation, before plugging into electronic sensors
+A series of synth effects for simulation, before plugging into electronic sensors. This is always a work-in-progress, not finalized code. Just used for testing
 
 ######Sonaqua_SoilSensor:
 Uses the Sparkfun Soil Moisture Sensor to make sounds. I'd still like to clean this one up. In a previous iteration, I was getting some lovely undertones, but I can't seem to quite get there anymore.
 
 ######Sonaqua_Phasemod_Humidity
-Humidity Sensor with Phasmod.
+Humidity Sensor with Phasmod effects
 
 ######Sonaqua_Heartbeat:
 A working example which uses a heart rate sensor and makes tones to match beats-per-minute.
+
+######Sonaqua_Plant_Conversation:
+Two sensors hooked up to two different plants that will simulate a conversation they might have.
 
 #####In Progress:
 ######Sonaqua_Electric_Noise:
