@@ -62,6 +62,9 @@ In progress, using Sonaqua with Mozzi
 In progress, using Sonaqua with Mozzi
 
 
+#####Quartet:
+This is in-progress, where we trigger synths from another Arduino. I'd suggest ignoring what's going on here for the time being
+
 #### Cables and parts
 The programmer cable you'll need is the 5V FTDI cable, available from Sparkfun:
 https://www.sparkfun.com/products/9718
