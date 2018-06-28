@@ -35,10 +35,14 @@ Humidity Sensor with Phasmod effects
 ######Sonaqua_Heartbeat:
 A working example which uses a heart rate sensor and makes tones to match beats-per-minute.
 
-######Sonaqua_Plant_Conversation:
-Two sensors hooked up to two different plants that will simulate a conversation they might have.
+######Sonaqua_Plant_Solo:
+Electrode hooked up to a plant. Use a 100K resistor to ground, 5V+ to plant, like a potentiometer.
 
 #####In Progress:
+
+######Sonaqua_Light_Sensor:
+In progress, just a template for now.
+
 ######Sonaqua_Electric_Noise:
 A working example of Mozzi using analog input for current flow (usually through water). 
 
@@ -58,9 +62,16 @@ In progress, using Sonaqua with Mozzi
 In progress, using Sonaqua with Mozzi
 
 
+#### Cables and parts
+The programmer cable you'll need is the 5V FTDI cable, available from Sparkfun:
+https://www.sparkfun.com/products/9718
+
+[full parts list to be added]
 
 
-#### Technical
+#### Circuit Board
+[to be added]
+
 
 
 #### License
