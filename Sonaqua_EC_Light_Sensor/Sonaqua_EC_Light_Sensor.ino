@@ -25,7 +25,7 @@
 #include <tables/triangle_warm8192_int8.h> // triangle table for oscillator
 #include <mozzi_midi.h>
 
-#define lightSensorPin A4    // analog control input
+#define lightSensorPin (A4)    // analog control input
 #define ECPower (A2)
 #define ECPin (A1)   
 
@@ -82,7 +82,7 @@ int lightInput;
 unsigned long rawEC;
 
 MSTimer glissTimer;
-MSTimer lightReadTimer;
+MSTimer sensorReadTimer;
 
 #include <mozzi_rand.h>
 
@@ -90,41 +90,35 @@ void setup(){
   randomSeed(A0);
   //randSeed(); // reseed the random generator for different results each time the sketch runs
   
-   pinMode(ECPin,INPUT);
+  pinMode(ECPin,INPUT);
   pinMode(ECPower,OUTPUT);                // set pin for sourcing current
-
 
   Serial.begin(115200);
   Serial.println("Starting up: S_");
   
   kDelay.set(echo_cells_1);
   startMozzi();
-
-  Serial.print("cs:" );
-  Serial.println( control_steps_per_gliss );
      
   glissTimer.setTimer(5000);
-  lightReadTimer.setTimer(1000);
-
-  Serial.println(getLightInput());
-  Serial.println(lightInput);
+  sensorReadTimer.setTimer(1000);
+  readSensors();
 }
 
 
 void updateControl(){
-  //-- the read call seems to adjust the values too much, resulting in an odd effect, tie these to a timer?
- 
- // Serial.println(getLightInput());
+//-- uncomment to see raw sensor values
+//  while(true) {
+//    Serial.println(getLightInput());
+//    Serial.println(getEC());
+//  }
+//  
 
-  getLightInput();
-  rawEC = getEC();
- // Serial.println(rawEC);
-  
-// glissModulo = 40 + (lightInput >> 4);
-
- // Serial.println(glissModulo);
-
- // Serial.println(lightInput);
+  //-- this will store the sensor values in rawEC and lightInput
+  //-- we use a timer because the analogRead() on getEC() results in audio glitches
+  if( sensorReadTimer.isExpired()) {
+    readSensors();
+    sensorReadTimer.start();
+  }
   
   averaged = kAverage.next(lightInput);
 
@@ -139,7 +133,6 @@ void updateControl(){
   aSin3.setFreq(kDelay.read(echo_cells_3)/ 12.0f + random(2));      // this random effect not-so signficant, but good for slight modulations
 
   lineGliss();
-
 }
 
 
@@ -205,10 +198,7 @@ void lineGliss() {
        control_steps_per_gliss = 8;
      else  
        control_steps_per_gliss = 16;
-*/
-     Serial.print("swapping cs:" );
-     Serial.println( control_steps_per_gliss );
-  }
+*/  }
 
 //-- could map gliss modulo here
   //  unsigned long rawEC = getEC()
@@ -226,12 +216,10 @@ int updateAudio(){
     +(aSin3.next()>>2)) >>3;
 */
 
-   int audioVal;
-
-
-       audioVal= 1*((int)aSin0.next()+aSin1.next()+(aSin2.next()>>1)
+   int audioVal= 1*((int)aSin0.next()+aSin1.next()+(aSin2.next()>>1)
     +(aSin3.next()>>2)) >>3;
-    
+
+  //-- this call seems to be stuttering the audio, otherwise it sounds pretty cool
   if( glissOn ) {
       //-- this modulo gives a nice high freq spinny effect, to counter the lower
      if( (aCounter % glissModulo) == 0 ) {
@@ -245,23 +233,30 @@ int updateAudio(){
     return (char)audioVal;
 }
 
-int getLightInput() {
-  lightInput = mozziAnalogRead(lightSensorPin);
-  //Serial.println(lightInput);
+//-- call both sensor-reading functons, which get stored in global variables
+void readSensors() {
+  getEC();
+  getLightInput();
 
-  lightInput = map(lightInput,0,1023,200,900);
+ // lightInput = map(lightInput,0,1023,100,1000);
+}
+
+//-- this one will respond to mozziAnalogRead() — I think
+int getLightInput() {
+  lightInput = analogRead(lightSensorPin);
   return lightInput;
 }
 
 //-- Sample EC using Analog pins, returns 0-1023
+//-- this won't work with mozzyAnalogRead(), so use regular analogRead() and our own timers
 unsigned int getEC(){
   unsigned int raw;
  
   digitalWrite(ECPower,HIGH);
 
   // This is not a mistake, First reading will be low beause of charged a capacitor
-  raw = mozziAnalogRead(ECPin);
-  raw = mozziAnalogRead(ECPin);   
+  raw= analogRead(ECPin);
+  raw= analogRead(ECPin);   
   
   digitalWrite(ECPower,LOW);
   
@@ -269,14 +264,16 @@ unsigned int getEC(){
     glissOn = false;
   else
     glissOn = true;
-
-  return random(200) + 5;
-  
+    
  return raw;
 }
+
+  
 
 void loop(){
   audioHook();
 }
+
+
 
 
