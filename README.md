@@ -35,8 +35,11 @@ Humidity Sensor with Phasmod effects
 ######Sonaqua_Heartbeat:
 A working example which uses a heart rate sensor and makes tones to match beats-per-minute.
 
-######Sonaqua_Plant_Solo:
+######Sonaqua_Plant_Electrods:
 Electrode hooked up to a plant. Use a 100K resistor to ground, 5V+ to plant, like a potentiometer.
+
+######Sonaqua_EC_Light_Sensor:
+EC Sensor + Light, in progress
 
 #####In Progress:
 

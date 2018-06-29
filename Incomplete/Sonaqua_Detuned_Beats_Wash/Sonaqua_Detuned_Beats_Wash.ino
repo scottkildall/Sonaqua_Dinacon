@@ -148,7 +148,7 @@ void updateControl(){
   // todo: choose a nice scale or progression and make a table for it
   // or add a very slow gliss for f1-f7, like shephard tones
   curEC = getEC(); 
-
+curEC = 500 + random(5);
 
   // map it to an 8 bit range for efficient calculations in updateAudio
    f1 = Q16n16_mtof(Q16n0_to_Q16n16(map(curEC, minEC, maxEC, lowFreq, highFreq)));

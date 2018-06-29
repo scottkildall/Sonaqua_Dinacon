@@ -9,7 +9,12 @@
  *  
  *  Designed for Arduino Uno / Metro Mini, but will work on other platforms
  *  
- *  Adapted from this Hackaday project
+ *  -----------------------------------------  
+ *   Sonaqua is copyright
+ *   Scott Kildall, 2018, CC by-nc-sa.  
+ * -----------------------------------------
+ * 
+ *  Circuit originally adapted from this Hackaday project
  *  https://hackaday.io/project/7008-fly-wars-a-hackers-solution-to-world-hunger/log/24646-three-dollar-ec-ppm-meter-arduino
  *  
  */

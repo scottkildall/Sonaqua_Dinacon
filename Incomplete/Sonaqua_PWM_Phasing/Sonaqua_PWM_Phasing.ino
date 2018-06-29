@@ -69,7 +69,6 @@ void updateControl(){
 
 
 int updateAudio(){
-  // zero 
   if( getEC() > 1000 )
     return 0;
     
@@ -92,6 +91,8 @@ void loop(){
 
 //-- Sample EC using Analog pins, returns 0-1023
 unsigned int getEC(){
+  return 500 + random(10);
+  
   unsigned int raw;
  
   digitalWrite(ECPower,HIGH);

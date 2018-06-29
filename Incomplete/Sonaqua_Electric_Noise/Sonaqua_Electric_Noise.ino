@@ -86,7 +86,8 @@ void initMozzy() {
 
 void updateControl(){
   curEC = getEC(); 
-
+  curEC = 500 + random(5);
+  
   //-- map rawEC, which is in range 0-1023 to freq range
   curFreq = (float)map(curEC, maxEC, minEC, (int)minAPhasor, (int)maxAPhasor);
   
@@ -115,11 +116,7 @@ int updateAudio(){
     
   char asig1 = (char)(aPhasor.next()>>24);
 
-  // this will produce a more glitchy, randomized sound
-//  if(random(1000) < 850)
-//    return 0;
-
-    return aCos.next() / (asig1) + random(5 + curFreq/20);
+   return aCos.next()/(asig1) + random(5 + curFreq/20);
 }
 
 void loop(){
