@@ -26,6 +26,8 @@
 #include <mozzi_midi.h>
 
 #define lightSensorPin A4    // analog control input
+#define ECPower (A2)
+#define ECPin (A1)   
 
 unsigned int echo_cells_1 = 32;   // 32
 unsigned int echo_cells_2 = 60;   // 60
@@ -59,7 +61,7 @@ byte lo_note = 24; // midi note numbers
 byte hi_note = 36;
 
 long audio_steps_per_gliss = AUDIO_RATE / 4;      // ie. 4 glisses per second
-long control_steps_per_gliss = CONTROL_RATE/8;      // a lower number makes for a speedier gliss
+long control_steps_per_gliss = CONTROL_RATE/4;      // a lower number makes for a speedier gliss
 
 // stuff for changing starting positions, probably just confusing really
 int counter = 0;
@@ -70,13 +72,28 @@ byte  gliss_offset_max = 36;
 bool glissOn = false;
 
 int aCounter= 0;
-int glissModulo = 40;
+
+//-- gliss stuff
+int glissModulo = 20;
+int glissMin = 20;
+int glissMax = 80;
+
 int lightInput;
+unsigned long rawEC;
 
 MSTimer glissTimer;
 MSTimer lightReadTimer;
 
+#include <mozzi_rand.h>
+
 void setup(){
+  randomSeed(A0);
+  //randSeed(); // reseed the random generator for different results each time the sketch runs
+  
+   pinMode(ECPin,INPUT);
+  pinMode(ECPower,OUTPUT);                // set pin for sourcing current
+
+
   Serial.begin(115200);
   Serial.println("Starting up: S_");
   
@@ -86,7 +103,7 @@ void setup(){
   Serial.print("cs:" );
   Serial.println( control_steps_per_gliss );
      
-  glissTimer.setTimer(10000);
+  glissTimer.setTimer(5000);
   lightReadTimer.setTimer(1000);
 
   Serial.println(getLightInput());
@@ -96,12 +113,14 @@ void setup(){
 
 void updateControl(){
   //-- the read call seems to adjust the values too much, resulting in an odd effect, tie these to a timer?
- // int mozziAnalogRead(lightSensorPin);
- // Serial.println(lightInput);
  
-  Serial.println(getLightInput());
+ // Serial.println(getLightInput());
+
+  getLightInput();
+  rawEC = getEC();
+ // Serial.println(rawEC);
   
- glissModulo = 40 + (lightInput >> 4);
+// glissModulo = 40 + (lightInput >> 4);
 
  // Serial.println(glissModulo);
 
@@ -114,12 +133,18 @@ void updateControl(){
   lowFreqMult = .5f + (float)(random(10,20)/10);
   
   //-- divide the averages to lower the frequency
-  aSin0.setFreq(averaged/lowFreqMult + random(100));                 // this random effect is significant, has nice effects, like bubbling water
-  aSin1.setFreq(kDelay.next(averaged)/4.0f + random(10));          // also significant, but not desirable
-  aSin2.setFreq(kDelay.read(echo_cells_2) / 8.0f + random(10));        // don't like this high-value, random effect         
-  aSin3.setFreq(kDelay.read(echo_cells_3)/ 12.0f + random(300));      // this random effect not-so signficant, but good for slight modulations
+  aSin0.setFreq(averaged/lowFreqMult + random(20));                 // this random effect is significant, has nice effects, like bubbling water
+  aSin1.setFreq(kDelay.next(averaged)/4.0f + random(2));          // also significant, but not desirable
+  aSin2.setFreq(kDelay.read(echo_cells_2) / 8.0f + random(2));        // don't like this high-value, random effect         
+  aSin3.setFreq(kDelay.read(echo_cells_3)/ 12.0f + random(2));      // this random effect not-so signficant, but good for slight modulations
 
-//-- line gliss
+  lineGliss();
+
+}
+
+
+void lineGliss() {
+  //-- line gliss
   if (--counter <= 0){
     
     // start at a new note
@@ -141,25 +166,57 @@ void updateControl(){
     counter = control_steps_per_gliss;
   }
 
-  if( random(300) == 0 ) {
-     if( control_steps_per_gliss == 16 )
+  //-- do some reandomization on the control steps, which will result in a longer/slower gliss
+//  if( random(300) == 0 ) {
+//     if( control_steps_per_gliss == 16 )
+//       control_steps_per_gliss = 8;
+//     else  
+//       control_steps_per_gliss = 16;
+//
+//     Serial.print("swapping cs:" );
+//     Serial.println( control_steps_per_gliss );
+//  }
+//  
+//  if( glissOn == false && random(500) == 0 ) {
+//    glissOn = true;
+//    glissTimer.setTimer(random(5000, 8000));
+//  }
+  
+  if( glissOn && glissTimer.isExpired() ) {
+  
+    //glissOn = false;
+
+  
+ //   glissModulo += (1 - random(3));
+
+    //-- wider ragnge of randomness for higher values of gliss
+    glissModulo = 10 + random(128-(getEC() >> 4));
+    
+    //-- constraint bounds
+    if( glissModulo < glissMin )
+      glissModulo  = glissMin;
+    else if( glissModulo > glissMax)
+      glissModulo = glissMax;
+      
+    glissTimer.start();
+    //Serial.println(glissModulo);
+/*
+    if( control_steps_per_gliss == 16 )
        control_steps_per_gliss = 8;
      else  
        control_steps_per_gliss = 16;
-
+*/
      Serial.print("swapping cs:" );
      Serial.println( control_steps_per_gliss );
   }
-  
-  if( glissOn == false && random(500) == 0 ) {
-    glissOn = true;
-    glissTimer.setTimer(random(5000, 8000));
-  }
-  
-  if( glissOn && glissTimer.isExpired() )
-    glissOn = false;
-}
 
+//-- could map gliss modulo here
+  //  unsigned long rawEC = getEC()
+
+
+      
+   // glissOn = true;
+}
 
 int updateAudio(){
   aCounter++;
@@ -171,13 +228,8 @@ int updateAudio(){
 
    int audioVal;
 
-  //-- pull some out
-  /*if( (random(2)) == 0 )
-     audioVal = 2*((int)aSin0.next()+(aSin2.next()>>1)
-      +(aSin3.next()>>2)) >>3;
-   else
-*/
-       audioVal= 2*((int)aSin0.next()+aSin1.next()+(aSin2.next()>>1)
+
+       audioVal= 1*((int)aSin0.next()+aSin1.next()+(aSin2.next()>>1)
     +(aSin3.next()>>2)) >>3;
     
   if( glissOn ) {
@@ -190,18 +242,37 @@ int updateAudio(){
 
 //    Serial.println(audioVal);
   
-    //-- brute slowdown to create a weird effect
-    //delayMicroseconds(10);
-
     return (char)audioVal;
 }
 
 int getLightInput() {
   lightInput = mozziAnalogRead(lightSensorPin);
-  Serial.println(lightInput);
+  //Serial.println(lightInput);
 
   lightInput = map(lightInput,0,1023,200,900);
   return lightInput;
+}
+
+//-- Sample EC using Analog pins, returns 0-1023
+unsigned int getEC(){
+  unsigned int raw;
+ 
+  digitalWrite(ECPower,HIGH);
+
+  // This is not a mistake, First reading will be low beause of charged a capacitor
+  raw = mozziAnalogRead(ECPin);
+  raw = mozziAnalogRead(ECPin);   
+  
+  digitalWrite(ECPower,LOW);
+  
+  if( raw > 1000 )
+    glissOn = false;
+  else
+    glissOn = true;
+
+  return random(200) + 5;
+  
+ return raw;
 }
 
 void loop(){
